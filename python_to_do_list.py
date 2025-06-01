@@ -34,15 +34,23 @@ def validar_escolha(opcao,lista):
     elif( opcao == 2):
         listar_tarefas(lista)
     elif(opcao == 3):
-        print('Opção 3.')
+        marcar_tarefa_concluida(lista)
     elif(opcao == 4):
-        print('Opção 4.')
+        remover_tarefa(lista)
     elif(opcao == 5):
         print('Opção 5.')
     elif(opcao == 6):
         print('Opção 6.')
     else:
         print('Opção Inválida.')
+def selecionar_item(lista_de_tarefas,texto):
+    while(True):
+        item_escolhido = tratar_erro(int,texto)
+        if item_escolhido <= 0 or item_escolhido > (len(lista_de_tarefas)):
+            print('Item selecionado é inválido.')
+        else:
+            return item_escolhido - 1
+
 def adicionar_tarefa(lista_de_tarefas):
     nome_tarefa = input('Digite o nome da tarefa: ')
     esta_tarefa = { 'nome': nome_tarefa, 'concluida' : False }
@@ -50,13 +58,41 @@ def adicionar_tarefa(lista_de_tarefas):
     print(f'Tarefa \' {esta_tarefa["nome"]} \' adicionada com sucesso!')
 def listar_tarefas(lista_de_tarefas):
     if(lista_de_tarefas):
-        print('---Lista de Tarefas---')
-        contador = 1
-        for i in lista_de_tarefas:
-            print(f'{contador}. {i["nome"]} {"CONCLUIDA" if i["concluida"] else "PENDENTE"}')
-            contador+=1
-        print('----------------------')
+        montar_lista(lista_de_tarefas)
         input('Pressione Enter para continuar...')
     else:
         print('Não existe tarefas.')
+def montar_lista(lista):
+    print('---Lista de Tarefas---')
+    contador = 1
+    for i in lista:
+        print(f'{contador}. {i["nome"]} {"CONCLUIDA" if i["concluida"] else "PENDENTE"}')
+        contador+=1
+    print('----------------------')
+def remover_tarefa(lista_de_tarefas):
+    if(lista_de_tarefas):
+        montar_lista(lista_de_tarefas)    
+        indicie_escolhido = selecionar_item(lista_de_tarefas,'Digite o número da tarefa a ser removida: ')
+        try:
+            print(f'Tarefa \'{lista_de_tarefas[indicie_escolhido]["nome"]}\' removida com sucesso!')
+            del lista_de_tarefas[indicie_escolhido]
+        except:
+            print('Erro ao Deletar Tarefa.')
+    else:
+        print('A lista de tarefas está vazia...')
+        return
+def marcar_tarefa_concluida(lista_de_tarefas):
+    if(lista_de_tarefas):
+        montar_lista(lista_de_tarefas)
+        indice_escolhido = selecionar_item(lista_de_tarefas,'Digite o número da tarefa a ser marcada como concluída: ')
+        item_escolhido = lista_de_tarefas[indice_escolhido]
+        if(item_escolhido["concluida"]):
+            print('A Tarefa já esta concluída.')
+        else:
+            lista_de_tarefas[indice_escolhido]["concluida"] = True
+            print(f'Tarefa \'{item_escolhido["nome"]}\' marcada como concluída!')
+    else:
+        print('A lista de tarefas está vazia...')
+        return
+
 main()
