@@ -30,9 +30,9 @@ def tratar_erro(tipo, texto):
             print('Entrada inválida.')
 def validar_escolha(opcao,lista):
     if(opcao == 1):
-        print('Opção 1.')
+        adicionar_tarefa(lista)
     elif( opcao == 2):
-        print('Opção 2.')
+        listar_tarefas(lista)
     elif(opcao == 3):
         print('Opção 3.')
     elif(opcao == 4):
@@ -43,5 +43,20 @@ def validar_escolha(opcao,lista):
         print('Opção 6.')
     else:
         print('Opção Inválida.')
-
+def adicionar_tarefa(lista_de_tarefas):
+    nome_tarefa = input('Digite o nome da tarefa: ')
+    esta_tarefa = { 'nome': nome_tarefa, 'concluida' : False }
+    lista_de_tarefas.append(esta_tarefa)
+    print(f'Tarefa \' {esta_tarefa["nome"]} \' adicionada com sucesso!')
+def listar_tarefas(lista_de_tarefas):
+    if(lista_de_tarefas):
+        print('---Lista de Tarefas---')
+        contador = 1
+        for i in lista_de_tarefas:
+            print(f'{contador}. {i["nome"]} {"CONCLUIDA" if i["concluida"] else "PENDENTE"}')
+            contador+=1
+        print('----------------------')
+        input('Pressione Enter para continuar...')
+    else:
+        print('Não existe tarefas.')
 main()
