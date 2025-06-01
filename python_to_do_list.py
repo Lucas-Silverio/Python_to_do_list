@@ -38,7 +38,7 @@ def validar_escolha(opcao,lista):
     elif(opcao == 4):
         remover_tarefa(lista)
     elif(opcao == 5):
-        print('Opção 5.')
+        pesquisar_tarefas(lista)
     elif(opcao == 6):
         print('Opção 6.')
     else:
@@ -94,5 +94,17 @@ def marcar_tarefa_concluida(lista_de_tarefas):
     else:
         print('A lista de tarefas está vazia...')
         return
-
+def pesquisar_tarefas(lista_de_tarefas):
+    item_pesquisado = input('Digite o que deseja pesquisar: ').lower()
+    lista_aux = []
+    for i in lista_de_tarefas:
+        if item_pesquisado in i["nome"].lower():
+            lista_aux.append(i)
+    if(lista_aux):
+        print('---Resultados:---')
+        for i in lista_aux:
+            print(f'Nome: \'{i["nome"]}\' Status: {"CONCLUIDA" if i["concluida"] else "PENDENTE"}')
+        print('------------------')
+    else:
+        print('Não foi encontrado nenhuma Tarefa.')
 main()
