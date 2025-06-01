@@ -1,3 +1,10 @@
+import os
+import time
+def limpar_tela(tempo):
+    print('Aguarde...')
+    time.sleep(tempo)
+    os.system('cls')
+    montar_menu()
 def main():
     tarefas = []
     montar_menu()
@@ -6,6 +13,8 @@ def main():
         validar_escolha(escolha,tarefas)
         if(escolha == 6):
             print('Saindo do programa. Até mais!')
+            time.sleep(2)
+            os.system('cls')
             break
 def montar_menu():
     print('''
@@ -31,18 +40,30 @@ def tratar_erro(tipo, texto):
 def validar_escolha(opcao,lista):
     if(opcao == 1):
         adicionar_tarefa(lista)
+        limpar_tela(1.5)
     elif( opcao == 2):
         listar_tarefas(lista)
+        limpar_tela(0)
     elif(opcao == 3):
         marcar_tarefa_concluida(lista)
+        limpar_tela(1.5)
     elif(opcao == 4):
         remover_tarefa(lista)
+        limpar_tela(1.5)
     elif(opcao == 5):
         pesquisar_tarefas(lista)
+        limpar_tela(1.5)
     elif(opcao == 6):
-        print('Opção 6.')
+        return
     else:
         print('Opção Inválida.')
+def montar_lista(lista):
+    print('---Lista de Tarefas---')
+    contador = 1
+    for i in lista:
+        print(f'{contador}. {i["nome"]} {"CONCLUIDA" if i["concluida"] else "PENDENTE"}')
+        contador+=1
+    print('----------------------')
 def selecionar_item(lista_de_tarefas,texto):
     while(True):
         item_escolhido = tratar_erro(int,texto)
@@ -50,7 +71,6 @@ def selecionar_item(lista_de_tarefas,texto):
             print('Item selecionado é inválido.')
         else:
             return item_escolhido - 1
-
 def adicionar_tarefa(lista_de_tarefas):
     nome_tarefa = input('Digite o nome da tarefa: ')
     esta_tarefa = { 'nome': nome_tarefa, 'concluida' : False }
@@ -61,14 +81,9 @@ def listar_tarefas(lista_de_tarefas):
         montar_lista(lista_de_tarefas)
         input('Pressione Enter para continuar...')
     else:
-        print('Não existe tarefas.')
-def montar_lista(lista):
-    print('---Lista de Tarefas---')
-    contador = 1
-    for i in lista:
-        print(f'{contador}. {i["nome"]} {"CONCLUIDA" if i["concluida"] else "PENDENTE"}')
-        contador+=1
-    print('----------------------')
+        print('Não existem tarefas.')
+        print('Aguarde ...')
+        time.sleep(3)
 def remover_tarefa(lista_de_tarefas):
     if(lista_de_tarefas):
         montar_lista(lista_de_tarefas)    
