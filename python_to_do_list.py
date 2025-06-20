@@ -1,12 +1,15 @@
 import os
 import time
+import datetime as dt
+import json
+
 def limpar_tela(tempo):
     print('Aguarde...')
     time.sleep(tempo)
     os.system('cls')
     montar_menu()
 def main():
-    tarefas = []
+    tarefas = configurar_lista()
     montar_menu()
     while(True):
         escolha = tratar_erro(int,'Digite o número da opção desejada: ')
@@ -16,6 +19,18 @@ def main():
             time.sleep(2)
             os.system('cls')
             break
+def configurar_lista():
+    tarefas = []
+    if os.path.exists('minhas-tarefas/tarefas.json'):
+        with open('minhas-tarefas/tarefas.json', "r+") as f:
+            tarefas = json.load(f)
+    else:
+        with open('minhas-tarefas/tarefas.json', "w") as f:
+            json.dump(tarefas,f,ensure_ascii=True,indent=4)
+    return tarefas
+def atualizar_lista(lista):
+    with open('minhas-tarefas/tarefas.json', 'w') as f:
+        json.dump(lista,f,ensure_ascii=True,indent=4)
 def montar_menu():
     print('''
 -----------------------
@@ -61,7 +76,7 @@ def montar_lista(lista):
     print('---Lista de Tarefas---')
     contador = 1
     for i in lista:
-        print(f'{contador}. {i["nome"]} {"CONCLUIDA" if i["concluida"] else "PENDENTE"}')
+        print(f'{contador}. {i["nome"]} {"CONCLUIDA" if i["concluida"] else "PENDENTE"} Data de criação: {i["data"]}')
         contador+=1
     print('----------------------')
 def selecionar_item(lista_de_tarefas,texto):
@@ -73,8 +88,13 @@ def selecionar_item(lista_de_tarefas,texto):
             return item_escolhido - 1
 def adicionar_tarefa(lista_de_tarefas):
     nome_tarefa = input('Digite o nome da tarefa: ')
-    esta_tarefa = { 'nome': nome_tarefa, 'concluida' : False }
+    data_tarefa = dt.datetime.now()
+    esta_tarefa = { 'nome': nome_tarefa, 'concluida' : False , 'data' : data_tarefa.strftime("%d-%m-%Y %H:%M")}
     lista_de_tarefas.append(esta_tarefa)
+    try:
+        atualizar_lista(lista_de_tarefas)
+    except:
+        print('Erro ao adicionar a tarefa.')
     print(f'Tarefa \' {esta_tarefa["nome"]} \' adicionada com sucesso!')
 def listar_tarefas(lista_de_tarefas):
     if(lista_de_tarefas):
@@ -91,6 +111,10 @@ def remover_tarefa(lista_de_tarefas):
         try:
             print(f'Tarefa \'{lista_de_tarefas[indicie_escolhido]["nome"]}\' removida com sucesso!')
             del lista_de_tarefas[indicie_escolhido]
+            try:
+                atualizar_lista(lista_de_tarefas)
+            except:
+                print('Erro ao excluir tarefa.')
         except:
             print('Erro ao Deletar Tarefa.')
     else:
@@ -105,6 +129,10 @@ def marcar_tarefa_concluida(lista_de_tarefas):
             print('A Tarefa já esta concluída.')
         else:
             lista_de_tarefas[indice_escolhido]["concluida"] = True
+            try:
+                atualizar_lista(lista_de_tarefas)
+            except:
+                print('Erro ao marcar concluida.')
             print(f'Tarefa \'{item_escolhido["nome"]}\' marcada como concluída!')
     else:
         print('A lista de tarefas está vazia...')
@@ -122,4 +150,7 @@ def pesquisar_tarefas(lista_de_tarefas):
         print('------------------')
     else:
         print('Não foi encontrado nenhuma Tarefa.')
+
+os.makedirs('minhas-tarefas', exist_ok=True)
+
 main()
